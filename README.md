@@ -4,20 +4,23 @@ A full-stack pet adoption platform built with the MERN stack that connects lovin
 
 ---
 
-## 🌐 Live URL
+## 🌐 Live URLs
 
-
+| | URL |
+|---|---|
+| **Frontend** | https://pet-adoption-client-mu.vercel.app |
+| **Backend API** | https://pet-adoption-platform-murex.vercel.app |
 
 ---
 
 ## ✨ Features
 
-- 🔐 **JWT Authentication** — Secure login & registration with HTTPOnly cookie-based JWT tokens. Supports Email/Password and real Google OAuth via `@react-oauth/google`.
+- 🔐 **JWT Authentication** — Secure login & registration with Bearer token JWT stored in localStorage. Supports Email/Password and real Google OAuth via `@react-oauth/google`.
 - 🐶 **Browse & Search Pets** — Explore all available pets with real-time search by name (`$regex`), filter by species (`$in`), and sort by fee or name using MongoDB operators.
 - 📋 **Adoption Request System** — Authenticated users can submit adoption requests with a preferred pickup date and message. Owners can approve or reject requests directly from their dashboard.
 - 🏠 **Shelter Dashboard** — Pet owners can add, edit, and delete their listings, view adoption statistics (total/available/adopted), and manage incoming requests with approve/reject controls.
 - ❤️ **Wishlist** — Save favourite pets to a personal wishlist for quick access later.
-- 🌙 **Dark / Light Theme** — Persistent theme toggle stored in localStorage, applied via a `data-theme` attribute.
+- 🌙 **Dark / Light Theme** — Persistent theme toggle stored in localStorage, toggling `.dark` class on `<html>` for Tailwind v4 dark mode.
 - 📱 **Fully Responsive** — Mobile-first design that works seamlessly across mobile, tablet, and desktop.
 - 🔒 **Adoption Controls** — Pet owners cannot adopt their own pets. Once a request is approved, the pet is marked as adopted and all other pending requests are automatically rejected.
 - ✨ **Framer Motion Animations** — Smooth page transitions and scroll-triggered animations throughout the UI.
@@ -27,12 +30,12 @@ A full-stack pet adoption platform built with the MERN stack that connects lovin
 
 ## 🛠️ NPM Packages Used
 
-### Frontend (`nextjs-client`)
+### Frontend (`client`)
 | Package | Purpose |
 |---|---|
 | `next` | React framework with Pages Router & SSR |
 | `react`, `react-dom` | UI library |
-| `tailwindcss` | Utility-first CSS framework |
+| `tailwindcss` | Utility-first CSS framework (v4) |
 | `framer-motion` | Animations and transitions |
 | `react-hot-toast` | Toast notifications |
 | `react-icons` | Icon library (Feather, Font Awesome) |
@@ -45,7 +48,7 @@ A full-stack pet adoption platform built with the MERN stack that connects lovin
 | `mongoose` | MongoDB ODM |
 | `jsonwebtoken` | JWT generation and verification |
 | `bcryptjs` | Password hashing |
-| `cookie-parser` | HTTPOnly cookie parsing |
+| `cookie-parser` | Cookie parsing middleware |
 | `cors` | Cross-origin resource sharing |
 | `dotenv` | Environment variable management |
 | `nodemon` | Development auto-restart |
@@ -56,23 +59,23 @@ A full-stack pet adoption platform built with the MERN stack that connects lovin
 
 ```
 Pet Adoption Platform/
-├── nextjs-client/          # Next.js frontend (Pages Router + Tailwind)
+├── client/                 # Next.js frontend (Pages Router + Tailwind v4)
 │   ├── pages/
-│   │   ├── index.js        # Home page (SSR)
-│   │   ├── all-pets.js     # All pets with search/filter (SSR)
-│   │   ├── pets/[id].js    # Pet details + adoption modal (SSR)
-│   │   ├── login.js        # Login with Google OAuth
-│   │   ├── register.js     # Registration
+│   │   ├── index.jsx       # Home page (SSR)
+│   │   ├── all-pets.jsx    # All pets with search/filter (SSR)
+│   │   ├── pets/[id].jsx   # Pet details + adoption modal (SSR)
+│   │   ├── login.jsx       # Login with Google OAuth
+│   │   ├── register.jsx    # Registration
 │   │   └── dashboard/      # Private dashboard pages
 │   ├── components/         # Navbar, Footer, PetCard, Modals, etc.
 │   ├── context/            # AuthContext (global auth + wishlist state)
-│   └── utils/              # apiFetch utility
+│   └── utils/              # apiFetch utility with Bearer token support
 │
 └── server/                 # Express backend
     ├── controllers/        # Auth, Pet, Request, Wishlist logic
     ├── models/             # Mongoose schemas
     ├── routes/             # API route definitions
-    ├── middleware/         # JWT auth middleware
+    ├── middleware/         # JWT auth middleware (cookie + Bearer)
     └── config/             # MongoDB connection
 ```
 
@@ -86,8 +89,8 @@ Pet Adoption Platform/
 
 ### 1. Clone the repository
 ```bash
-git clone https://github.com/yourusername/pet-adoption-platform.git
-cd pet-adoption-platform
+git clone https://github.com/RohanJabed/Pet-Adoption-Platform.git
+cd Pet-Adoption-Platform
 ```
 
 ### 2. Setup the backend
@@ -111,11 +114,11 @@ npm run dev
 
 ### 3. Setup the frontend
 ```bash
-cd nextjs-client
+cd client
 npm install
 ```
 
-Create `nextjs-client/.env.local`:
+Create `client/.env.local`:
 ```env
 NEXT_PUBLIC_API_URL=http://localhost:5001
 NEXT_PUBLIC_GOOGLE_CLIENT_ID=your_google_oauth_client_id
@@ -160,6 +163,15 @@ Open [http://localhost:3000](http://localhost:3000)
 | Add Pet / Edit Pet | Private | Static |
 | My Requests | Private | Static |
 | Wishlist | Private | Static |
+
+---
+
+## 🚢 Deployment
+
+Both frontend and backend are deployed on **Vercel**.
+
+- Frontend deployed from `client/` directory
+- Backend deployed from `server/` directory with `vercel.json` routing all requests to `server.js`
 
 ---
 
