@@ -26,8 +26,8 @@ app.use(cookieParser());
 
 // CORS configuration (crucial for allowing credentials like HTTPOnly cookies across origins)
 const allowedOrigins = [
-  process.env.CLIENT_URL || 'http://localhost:5173',
-  'https://pet-adoption-platform.vercel.app', // placeholder for client production URL
+  process.env.CLIENT_URL || 'http://localhost:3000',
+  'https://pet-adoption-platform.vercel.app',
 ];
 
 app.use(

@@ -45,6 +45,7 @@ export const AuthProvider = ({ children }) => {
         }
       } catch {
         setUser(null);
+        localStorage.removeItem('token');
       } finally {
         setLoading(false);
       }
@@ -90,6 +91,7 @@ export const AuthProvider = ({ children }) => {
     setLoading(true);
     try {
       const userData = await apiFetch('/api/auth/login', { method: 'POST', body: { email, password } });
+      if (userData.token) localStorage.setItem('token', userData.token);
       setUser(userData);
       const wishlistData = await apiFetch('/api/wishlist');
       setWishlist(wishlistData || []);
@@ -106,6 +108,7 @@ export const AuthProvider = ({ children }) => {
         method: 'POST',
         body: { name, email, photoURL, password, confirmPassword },
       });
+      if (userData.token) localStorage.setItem('token', userData.token);
       setUser(userData);
       setWishlist([]);
       return userData;
@@ -118,6 +121,7 @@ export const AuthProvider = ({ children }) => {
     setLoading(true);
     try {
       const userData = await apiFetch('/api/auth/google-login', { method: 'POST', body: googleProfile });
+      if (userData.token) localStorage.setItem('token', userData.token);
       setUser(userData);
       const wishlistData = await apiFetch('/api/wishlist');
       setWishlist(wishlistData || []);
@@ -133,6 +137,7 @@ export const AuthProvider = ({ children }) => {
     } catch (err) {
       console.error('Logout error:', err.message);
     } finally {
+      localStorage.removeItem('token');
       setUser(null);
       setWishlist([]);
     }

@@ -11,8 +11,10 @@ const generateToken = (res, id) => {
     httpOnly: true,
     secure: process.env.NODE_ENV === 'production',
     sameSite: process.env.NODE_ENV === 'production' ? 'none' : 'lax',
-    maxAge: 30 * 24 * 60 * 60 * 1000, // 30 days
+    maxAge: 30 * 24 * 60 * 60 * 1000,
   });
+
+  return token;
 };
 
 // @desc    Register a new user
@@ -57,7 +59,7 @@ export const registerUser = async (req, res) => {
     });
 
     if (user) {
-      generateToken(res, user._id);
+      const token = generateToken(res, user._id);
 
       res.status(201).json({
         _id: user._id,
@@ -65,6 +67,7 @@ export const registerUser = async (req, res) => {
         email: user.email,
         photoURL: user.photoURL,
         role: user.role,
+        token,
       });
     } else {
       res.status(400).json({ message: 'Invalid user data' });
@@ -88,7 +91,7 @@ export const loginUser = async (req, res) => {
     const user = await User.findOne({ email });
 
     if (user && (await user.matchPassword(password))) {
-      generateToken(res, user._id);
+      const token = generateToken(res, user._id);
 
       res.json({
         _id: user._id,
@@ -96,6 +99,7 @@ export const loginUser = async (req, res) => {
         email: user.email,
         photoURL: user.photoURL,
         role: user.role,
+        token,
       });
     } else {
       res.status(401).json({ message: 'Invalid email or password' });
@@ -132,12 +136,15 @@ export const googleLogin = async (req, res) => {
 
     generateToken(res, user._id);
 
+    const token = jwt.sign({ id: user._id }, process.env.JWT_SECRET, { expiresIn: '30d' });
+
     res.json({
       _id: user._id,
       name: user.name,
       email: user.email,
       photoURL: user.photoURL,
       role: user.role,
+      token,
     });
   } catch (error) {
     res.status(500).json({ message: error.message });
